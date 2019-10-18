@@ -41,13 +41,14 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "RoleId", referencedColumnName = "id"))
     private Set<Role> roles;
 
-    public User(String title, String firstName, String lastName, String gender, String bvn, String phoneNumber,LocalDate dob) {
+    public User(String title, String firstName, String lastName, String gender, String bvn, String phoneNumber,String email,LocalDate dob) {
         this.title = title;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
         this.bvn = bvn;
         this.phoneNumber = phoneNumber;
+        this.email =email;
         this.dob = dob;
     }
 }

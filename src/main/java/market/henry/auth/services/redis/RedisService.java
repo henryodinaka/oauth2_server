@@ -23,7 +23,7 @@ public class RedisService{
             return false;
         }
         String json = JsonBuilder.generateJson(obj);
-
+        System.out.println("Saved object "+json+" Key "+key);
         redisRepository.add(json,key,sessionTimeOut);
         redisTemplate.expire(KEY, sessionTimeOut, TimeUnit.MINUTES);
         return true;
@@ -31,8 +31,8 @@ public class RedisService{
 
     public <T> T  getRecordFromRedis(String key,Class<T> clazz) {
         Object obj = redisRepository.findObj(key);
+        System.out.println("the retrieved object "+obj+" with key "+key);
         if (obj != null){
-            System.out.println("the retrieved object "+obj);
             T fromJson = JsonBuilder.otherObj(obj.toString(),clazz);
             return fromJson;
         }

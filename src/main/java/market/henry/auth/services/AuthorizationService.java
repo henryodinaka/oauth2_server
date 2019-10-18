@@ -32,7 +32,7 @@ public class AuthorizationService {
             log.info("ClientId request is empty");
             throw new AuthServerException(400,"ClientId request is empty");
         }
-        boolean saved = redisService.saveRecordToRedis(token, clientId, 10);
+        boolean saved = redisService.saveRecordToRedis(token, clientId, 30);
         if (!saved){
             log.info("Generated token not saved");
             throw new AuthServerException(400,"Generated token not saved");

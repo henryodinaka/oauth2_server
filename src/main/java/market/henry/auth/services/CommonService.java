@@ -1,6 +1,7 @@
 package market.henry.auth.services;
 
 import lombok.extern.slf4j.Slf4j;
+import market.henry.auth.config.email.SendEmailNotifications;
 import market.henry.auth.dto.BvnDetails;
 import market.henry.auth.enums.ResponseCode;
 import market.henry.auth.exceptions.AuthServerException;
@@ -12,6 +13,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,6 +25,8 @@ public class CommonService {
     private RedisService redisService;
     @Autowired
     private Environment environment;
+    @Autowired
+    private SendEmailNotifications sendEmailNotifications;
 
     public ResponseEntity validateBvn(String bvn){
         User user = userRepo.getByBvn(bvn);
@@ -55,9 +59,10 @@ public class CommonService {
         }
         String tokenTimeOut = environment.getProperty("app.opt.timeout");
 
-        boolean saved = redisService.saveRecordToRedis(secret, phoneNumber, Long.parseLong(tokenTimeOut == null ? "5" : tokenTimeOut));
+        boolean saved = redisService.saveRecordToRedis(secret, phoneNumber, Long.parseLong(tokenTimeOut == null ? "15" : tokenTimeOut));
         if (!saved)
             return Response.setUpResponse(ResponseCode.UNAVAILABLE,message,null);
+        sendEmail(phoneNumber,secret,tokenTimeOut);
         return Response.setUpResponse(ResponseCode.SUCCESS,"",secret);
     }
     public ResponseEntity validateSecret(String phoneNumber,String secret,String channelCode) throws AuthServerException {
@@ -79,11 +84,17 @@ public class CommonService {
         String secretSaved = redisService.getRecordFromRedis(phoneNumber, String.class);
 
         if (secretSaved==null)
-            return Response.setUpResponse(408,message+" has expired","",null);
+            return ResponseEntity.ok(new Response(408,message+" has expired",null));
 
         if (!secretSaved.equalsIgnoreCase(secret))
-            return Response.setUpResponse(400,message+" is invalid","",null);
+            return ResponseEntity.ok(new Response(400,message+" is invalid",null));
 
         return Response.setUpResponse(202,message+" is valid","",null);
+    }
+
+    @Async
+    public void sendEmail(String email,String otp,String expires){
+        log.info("Sending otp to bvn email {} OTP {}",email,otp);
+        sendEmailNotifications.sendApprovalMail(email,otp,expires);
     }
 }

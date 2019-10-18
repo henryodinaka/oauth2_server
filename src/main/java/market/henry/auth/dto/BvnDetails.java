@@ -7,19 +7,23 @@ import market.henry.auth.utils.CommonUtils;
 
 @Data
 public class BvnDetails {
+    private String bvn;
     private String title;
     private String firstName;
     private String surname;
     private String gender;
     private String phoneNumber;
+    private String email;
     private String  dob;
 
     public BvnDetails(User user) throws AuthServerException {
+        this.bvn = user.getBvn();
         this.title = user.getTitle();
         this.firstName = user.getFirstName();
         this.surname = user.getLastName();
         this.gender = user.getGender();
         this.phoneNumber = user.getPhoneNumber();
+        this.email = user.getEmail();
         this.dob = CommonUtils.dateToString(user.getDob());
     }
 }

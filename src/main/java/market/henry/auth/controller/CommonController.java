@@ -1,5 +1,6 @@
   package market.henry.auth.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import market.henry.auth.dto.SecretRequest;
 import market.henry.auth.enums.ResponseCode;
 import market.henry.auth.exceptions.AuthServerException;
@@ -15,6 +16,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 
   @RestController
+  @Slf4j
 public class CommonController {
 
     @Autowired
@@ -31,13 +33,23 @@ public class CommonController {
   }
   @GetMapping("/generate/secret")
   public ResponseEntity generateSecret(@RequestParam String phoneNumber, HttpServletRequest httpServletRequest) {
+      ResponseEntity responseEntity = null;
      try {
          Response response = authorizationService.validateInternalCall(httpServletRequest);
          if (!"00".equalsIgnoreCase(response.getStatusCode())) return ResponseEntity.ok(response);
          String channelCode = httpServletRequest.getHeader("ChannelCode");
-         return commonService.generateSecret(phoneNumber, channelCode);
+         if (!Validation.validData(channelCode)) {
+             responseEntity = Response.setUpResponse(200, "Invalid channel code", "", null);
+             log.info("{}",responseEntity);
+             return responseEntity;
+         }
+           responseEntity = commonService.generateSecret(phoneNumber, channelCode);
+         log.info("{}",responseEntity);
+         return responseEntity;
      }catch (AuthServerException e){
-         return Response.setUpResponse(e.getHttpCode(),e.getMessage(),"",null);
+          responseEntity = Response.setUpResponse(e.getHttpCode(), e.getMessage(), "", null);
+          log.info("{}",responseEntity);
+         return responseEntity;
      }
 
   }
@@ -49,9 +61,14 @@ public class CommonController {
          if (!"00".equalsIgnoreCase(response.getStatusCode())) return ResponseEntity.ok(response);
          String channelCode = httpServletRequest.getHeader("ChannelCode");
          String error = Validation.validateSecretRequest(request, channelCode);
-         if (error != null)
-             return Response.setUpResponse(ResponseCode.BAD_REQUEST, error, null);
-         return commonService.validateSecret(request.getPhoneNumber(), request.getSecret(), channelCode);
+         if (error != null) {
+             ResponseEntity<Response> res = ResponseEntity.ok(Response.setUpResponse(ResponseCode.BAD_REQUEST, error));
+             log.info("{}",res);
+             return res;
+         }
+         ResponseEntity responseEntity = commonService.validateSecret(request.getPhoneNumber(), request.getSecret(), channelCode);
+         log.info("{}",responseEntity);
+         return responseEntity;
      }catch (AuthServerException e){
          return Response.setUpResponse(e.getHttpCode(),e.getMessage(),"",null);
      }
