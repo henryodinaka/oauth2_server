@@ -1,8 +1,0 @@
-2019-10-15 20:55:41 INFO [http-nio-9090-exec-4] m.h.a.s.AuthorizationService
-                [AuthorizationService.java:75] The request headers ClientId union:bank:stp:new:account: PublicKey : union:bank:oauth2:auth:server Token 67ca066f-4ab8-48dd-9327-98dbb030b9d4 
-2019-10-15 20:55:41 INFO [http-nio-9090-exec-5] m.h.a.s.AuthorizationService
-                [AuthorizationService.java:75] The request headers ClientId union:bank:stp:new:account: PublicKey : union:bank:oauth2:auth:server Token 67ca066f-4ab8-48dd-9327-98dbb030b9d4 
-2019-10-15 20:56:18 INFO [http-nio-9090-exec-7] m.h.a.s.AuthorizationService
-                [AuthorizationService.java:75] The request headers ClientId union:bank:stp:new:account: PublicKey : union:bank:oauth2:auth:server Token 67ca066f-4ab8-48dd-9327-98dbb030b9d4 
-2019-10-15 20:56:18 INFO [http-nio-9090-exec-8] m.h.a.s.AuthorizationService
-                [AuthorizationService.java:75] The request headers ClientId union:bank:stp:new:account: PublicKey : union:bank:oauth2:auth:server Token 67ca066f-4ab8-48dd-9327-98dbb030b9d4 
