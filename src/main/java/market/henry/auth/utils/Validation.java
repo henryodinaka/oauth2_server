@@ -1,5 +1,6 @@
 package market.henry.auth.utils;
 
+import market.henry.auth.dto.AccountCheckRequest;
 import market.henry.auth.dto.SecretRequest;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,13 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class Validation {
+
+    public static String validateAccountCheckRequest(AccountCheckRequest accountCheckRequest){
+        if (accountCheckRequest == null) return "Invalid request";
+        if (!validData(accountCheckRequest.getFirstName())) return "Invalid first name";
+        if (!validData(accountCheckRequest.getLastName())) return "Invalid last name";
+        return null;
+    }
     public static String validateSecretRequest(SecretRequest secretRequest, String channelCode){
         if (secretRequest == null) return "Invalid request";
         if (!validNumberLength(secretRequest.getPhoneNumber(),11)) return "Invalid phone number must be 11 digits";

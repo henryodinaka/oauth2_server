@@ -44,5 +44,10 @@ public class Response implements Serializable {
     return new Response(resonseCode.getCode(), resonseCode.getValue().replace("{}",replace), null);
 
   }
+  public static ResponseEntity setUpResponse(Integer httpCode, String statusMessage){
+      Response responseMessage = new Response(httpCode, statusMessage, null);
+      return ResponseEntity.status(httpCode).body(responseMessage);
+
+  }
 
 }

@@ -2,6 +2,7 @@ package market.henry.auth.services;
 
 import lombok.extern.slf4j.Slf4j;
 import market.henry.auth.config.email.SendEmailNotifications;
+import market.henry.auth.dto.AccountCheckRequest;
 import market.henry.auth.dto.BvnDetails;
 import market.henry.auth.enums.ResponseCode;
 import market.henry.auth.exceptions.AuthServerException;
@@ -9,6 +10,7 @@ import market.henry.auth.model.User;
 import market.henry.auth.repo.UserRepo;
 import market.henry.auth.services.redis.RedisService;
 import market.henry.auth.utils.Response;
+import market.henry.auth.utils.Validation;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -37,6 +39,22 @@ public class CommonService {
         }
         try {
             return Response.setUpResponse(202,"BVN valid","",new BvnDetails(user));
+        } catch (AuthServerException e) {
+            log.error("ERROR::::::",e);
+            return Response.setUpResponse(e.getHttpCode(),e.getMessage(),"",null);
+        }
+    }
+    public ResponseEntity checkAccountExist(AccountCheckRequest accountCheckRequest){
+        String error = Validation.validateAccountCheckRequest(accountCheckRequest);
+        if (error !=null) return Response.setUpResponse(400,error);
+        User user = userRepo.checkAccountExist(accountCheckRequest.getFirstName(),accountCheckRequest.getLastName());
+        if (user == null)
+        {
+            log.info("Invalid bvn; User not found");
+            return ResponseEntity.ok(new Response(200,"User has no account",null));
+        }
+        try {
+            return Response.setUpResponse(202,"User has account","",new BvnDetails(user));
         } catch (AuthServerException e) {
             log.error("ERROR::::::",e);
             return Response.setUpResponse(e.getHttpCode(),e.getMessage(),"",null);

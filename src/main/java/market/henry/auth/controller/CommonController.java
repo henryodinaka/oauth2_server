@@ -1,6 +1,7 @@
   package market.henry.auth.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import market.henry.auth.dto.AccountCheckRequest;
 import market.henry.auth.dto.SecretRequest;
 import market.henry.auth.enums.ResponseCode;
 import market.henry.auth.exceptions.AuthServerException;
@@ -30,6 +31,19 @@ public class CommonController {
       if (!"00".equalsIgnoreCase(response.getStatusCode()))return ResponseEntity.ok(response);
 
       return commonService.validateBvn(bvn);
+  }
+
+  @PostMapping("/payment")
+  public ResponseEntity makePayment(@RequestBody AccountCheckRequest accountCheckRequest, HttpServletRequest httpServletRequest) {
+      return Response.setUpResponse(202,"Payment was successful");
+  }
+
+  @PostMapping("/account/check")
+  public ResponseEntity checkAccountExist(@RequestBody AccountCheckRequest accountCheckRequest, HttpServletRequest httpServletRequest) {
+      Response response = authorizationService.validateInternalCall(httpServletRequest);
+      if (!"00".equalsIgnoreCase(response.getStatusCode()))return ResponseEntity.ok(response);
+
+      return commonService.checkAccountExist(accountCheckRequest);
   }
   @GetMapping("/generate/secret")
   public ResponseEntity generateSecret(@RequestParam String phoneNumber, HttpServletRequest httpServletRequest) {
