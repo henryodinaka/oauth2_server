@@ -2,9 +2,11 @@
 
 import lombok.extern.slf4j.Slf4j;
 import market.henry.auth.dto.AccountCheckRequest;
+import market.henry.auth.dto.AccountCreationRequest;
 import market.henry.auth.dto.SecretRequest;
 import market.henry.auth.enums.ResponseCode;
 import market.henry.auth.exceptions.AuthServerException;
+import market.henry.auth.services.AccountService;
 import market.henry.auth.services.AuthorizationService;
 import market.henry.auth.services.CommonService;
 import market.henry.auth.utils.Response;
@@ -20,12 +22,18 @@ import javax.servlet.http.HttpServletRequest;
   @Slf4j
 public class CommonController {
 
-    @Autowired
     private CommonService commonService;
-    @Autowired
     private AuthorizationService authorizationService;
+    private AccountService accountService;
 
-  @GetMapping("/validate/bvn")
+    @Autowired
+      public CommonController(CommonService commonService, AuthorizationService authorizationService, AccountService accountService) {
+          this.commonService = commonService;
+          this.authorizationService = authorizationService;
+          this.accountService = accountService;
+      }
+
+      @GetMapping("/validate/bvn")
   public ResponseEntity bvnValidation(@RequestParam String bvn, HttpServletRequest httpServletRequest) {
       Response response = authorizationService.validateInternalCall(httpServletRequest);
       if (!"00".equalsIgnoreCase(response.getStatusCode()))return ResponseEntity.ok(response);
@@ -38,12 +46,43 @@ public class CommonController {
       return Response.setUpResponse(202,"Payment was successful");
   }
 
+  @PostMapping("/avr")
+  public ResponseEntity avr(HttpServletRequest httpServletRequest) {
+      return Response.setUpResponse(202,"AVR initiated successfully");
+  }
+
   @PostMapping("/account/check")
   public ResponseEntity checkAccountExist(@RequestBody AccountCheckRequest accountCheckRequest, HttpServletRequest httpServletRequest) {
       Response response = authorizationService.validateInternalCall(httpServletRequest);
       if (!"00".equalsIgnoreCase(response.getStatusCode()))return ResponseEntity.ok(response);
 
       return commonService.checkAccountExist(accountCheckRequest);
+  }
+
+  @PostMapping("/create/account")
+  public ResponseEntity createAccount(@RequestBody AccountCreationRequest accountCheckRequest, HttpServletRequest httpServletRequest) {
+      Response response = authorizationService.validateInternalCall(httpServletRequest);
+      if (!"00".equalsIgnoreCase(response.getStatusCode()))return ResponseEntity.ok(response);
+
+      try {
+          return accountService.setup(accountCheckRequest);
+      } catch (AuthServerException e) {
+          log.error("Error ",e);
+          return Response.setUpResponse(e.getHttpCode(),e.getMessage());
+      }
+  }
+
+  @PostMapping("/reactivate/account")
+  public ResponseEntity reactivateAccount(@RequestBody AccountCreationRequest accountCheckRequest, HttpServletRequest httpServletRequest) {
+      Response response = authorizationService.validateInternalCall(httpServletRequest);
+      if (!"00".equalsIgnoreCase(response.getStatusCode()))return ResponseEntity.ok(response);
+
+      try {
+          return accountService.setup(accountCheckRequest);
+      } catch (AuthServerException e) {
+          log.error("Error ",e);
+          return Response.setUpResponse(e.getHttpCode(),e.getMessage());
+      }
   }
   @GetMapping("/generate/secret")
   public ResponseEntity generateSecret(@RequestParam String phoneNumber, HttpServletRequest httpServletRequest) {

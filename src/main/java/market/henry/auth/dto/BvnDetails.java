@@ -2,6 +2,7 @@ package market.henry.auth.dto;
 
 import lombok.Data;
 import market.henry.auth.exceptions.AuthServerException;
+import market.henry.auth.model.Account;
 import market.henry.auth.model.User;
 import market.henry.auth.utils.CommonUtils;
 
@@ -15,6 +16,7 @@ public class BvnDetails {
     private String phoneNumber;
     private String email;
     private String  dob;
+    private String accountNumber;
 
     public BvnDetails(User user) throws AuthServerException {
         this.bvn = user.getBvn();
@@ -25,5 +27,16 @@ public class BvnDetails {
         this.phoneNumber = user.getPhoneNumber();
         this.email = user.getEmail();
         this.dob = CommonUtils.dateToString(user.getDob());
+    }
+
+    public BvnDetails(Account account) throws AuthServerException {
+        this.bvn = account.getBvn();
+        this.title = account.getTitle();
+        this.firstName = account.getFirstName();
+        this.surname = account.getSurname();
+        this.gender = account.getGender();
+        this.phoneNumber = account.getPhoneNumber();
+        this.email = account.getEmail();
+        this.dob = CommonUtils.dateToString(account.getDob());
     }
 }

@@ -3,6 +3,7 @@ package market.henry.auth.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Builder
 @NoArgsConstructor
@@ -21,7 +22,7 @@ public class Account {
     private String middleName;
     private String surname;
     private String phoneNumber;
-    private String  dob;
+    private LocalDate dob;
     private String gender;
     private String address;
     private String country;
@@ -35,6 +36,7 @@ public class Account {
     private String annualIncome;
     private String  initialAmount;
     private String accountTier;
+    private String accountNumber;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "accountDocument")
