@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import market.henry.auth.config.email.email.EmailMessage;
 import market.henry.auth.config.email.email.EmailMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;

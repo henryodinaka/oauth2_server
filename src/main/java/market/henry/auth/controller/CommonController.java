@@ -3,12 +3,15 @@
 import lombok.extern.slf4j.Slf4j;
 import market.henry.auth.dto.AccountCheckRequest;
 import market.henry.auth.dto.AccountCreationRequest;
+import market.henry.auth.dto.LoanRequest;
 import market.henry.auth.dto.SecretRequest;
 import market.henry.auth.enums.ResponseCode;
 import market.henry.auth.exceptions.AuthServerException;
+import market.henry.auth.model.StartWorkFlow;
 import market.henry.auth.services.AccountService;
 import market.henry.auth.services.AuthorizationService;
 import market.henry.auth.services.CommonService;
+import market.henry.auth.services.StarWorkService;
 import market.henry.auth.utils.Response;
 import market.henry.auth.utils.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
   @RestController
   @Slf4j
@@ -25,12 +29,14 @@ public class CommonController {
     private CommonService commonService;
     private AuthorizationService authorizationService;
     private AccountService accountService;
+    private StarWorkService starWorkService;
 
     @Autowired
-      public CommonController(CommonService commonService, AuthorizationService authorizationService, AccountService accountService) {
+      public CommonController(CommonService commonService, AuthorizationService authorizationService, AccountService accountService,StarWorkService starWorkService) {
           this.commonService = commonService;
           this.authorizationService = authorizationService;
           this.accountService = accountService;
+          this.starWorkService=starWorkService;
       }
 
       @GetMapping("/validate/bvn")
@@ -59,6 +65,44 @@ public class CommonController {
       return commonService.checkAccountExist(accountCheckRequest);
   }
 
+  @GetMapping("/account/inquiry")
+  public ResponseEntity accountInquiry(@RequestParam String accountNumber, HttpServletRequest httpServletRequest) {
+      Response response = authorizationService.validateInternalCall(httpServletRequest);
+      if (!"00".equalsIgnoreCase(response.getStatusCode()))return ResponseEntity.ok(response);
+
+      return commonService.accountInquiry(accountNumber);
+  }
+
+  @PostMapping("/star/status")
+  public ResponseEntity getStarStatus(@RequestBody List<String> applicationNumbers, HttpServletRequest httpServletRequest) {
+        log.info("Incomming request for start status {}",applicationNumbers);
+      Response response = authorizationService.validateInternalCall(httpServletRequest);
+      if (!"00".equalsIgnoreCase(response.getStatusCode()))return ResponseEntity.ok(response);
+
+      List<StartWorkFlow> stars = starWorkService.getStarStatus(applicationNumbers);
+      log.info("Stars retrieved {}",stars);
+      return Response.setUpResponse(ResponseCode.SUCCESS,"",stars);
+  }
+
+  @PostMapping("/disburse/status")
+  public ResponseEntity getStarDisbursementStatus(@RequestBody List<String> applicationNumbers, HttpServletRequest httpServletRequest) {
+        log.info("Incomming request for start status {}",applicationNumbers);
+      Response response = authorizationService.validateInternalCall(httpServletRequest);
+      if (!"00".equalsIgnoreCase(response.getStatusCode()))return ResponseEntity.ok(response);
+
+      List<StartWorkFlow> stars = starWorkService.upadteAndDisburse(applicationNumbers);
+      log.info("Stars retrieved {}",stars);
+      return Response.setUpResponse(ResponseCode.SUCCESS,"",stars);
+  }
+
+  @GetMapping("/account/balance/inquiry")
+  public ResponseEntity accountBalanceInquiry(@RequestParam String accountNumber, HttpServletRequest httpServletRequest) {
+      Response response = authorizationService.validateInternalCall(httpServletRequest);
+      if (!"00".equalsIgnoreCase(response.getStatusCode()))return ResponseEntity.ok(response);
+
+      return commonService.accountBalanceInquiry(accountNumber);
+  }
+
   @PostMapping("/create/account")
   public ResponseEntity createAccount(@RequestBody AccountCreationRequest accountCheckRequest, HttpServletRequest httpServletRequest) {
       Response response = authorizationService.validateInternalCall(httpServletRequest);
@@ -83,6 +127,13 @@ public class CommonController {
           log.error("Error ",e);
           return Response.setUpResponse(e.getHttpCode(),e.getMessage());
       }
+  }
+  @PostMapping("/starwork")
+  public ResponseEntity queueToStarWorkFlow(@RequestBody LoanRequest loanRequest, HttpServletRequest httpServletRequest) {
+      Response response = authorizationService.validateInternalCall(httpServletRequest);
+      if (!"00".equalsIgnoreCase(response.getStatusCode()))return ResponseEntity.ok(response);
+
+      return starWorkService.setup(loanRequest);
   }
   @GetMapping("/generate/secret")
   public ResponseEntity generateSecret(@RequestParam String phoneNumber, HttpServletRequest httpServletRequest) {

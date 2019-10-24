@@ -21,7 +21,7 @@ public class AuthorizationController {
     public ResponseEntity generateToken(HttpServletRequest httpServletRequest){
         String clientId = httpServletRequest.getHeader("ClientId");
         String publicKey = httpServletRequest.getHeader("PublicKey");
-        String ChannelCode = httpServletRequest.getHeader("ChannelCode");
+//        String ChannelCode = httpServletRequest.getHeader("ChannelCode");
 
         String token = null;
         try {

@@ -1,6 +1,7 @@
 package market.henry.auth.utils;
 
 import market.henry.auth.dto.AccountCheckRequest;
+import market.henry.auth.dto.LoanRequest;
 import market.henry.auth.dto.SecretRequest;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,22 @@ public class Validation {
         if (!validData(accountCheckRequest.getLastName())) return "Invalid last name";
         return null;
     }
+    public static String validateLoanRequest(LoanRequest loanRequest){
+        if (loanRequest == null) return "Invalid request";
+        if (!validLength(loanRequest.getAccountNumber(),10)) return "Account number must be 10 digits";
+        if (!validData(loanRequest.getApplicationNumber())) return "Invalid application number";
+        if (!validNumberLength(loanRequest.getInterestRate(),1,3)) return "Interest rate cannot be more than 3 digits";
+        if (!validNumberLength(loanRequest.getAmount(),1,15)) return "amount can not be more than 15 digits";
+        if (!validData(loanRequest.getProductCode())) return "Invalid product code";
+        if (!validNumberLength(loanRequest.getTenor(),1,3)) return "Tenor can not be between 1 and 3 digist";
+        if (!validData(loanRequest.getProductCode())) return "Invalid product code";
+        return null;
+    }
     public static String validateSecretRequest(SecretRequest secretRequest, String channelCode){
         if (secretRequest == null) return "Invalid request";
-        if (!validNumberLength(secretRequest.getPhoneNumber(),11)) return "Invalid phone number must be 11 digits";
-        if ("01".equalsIgnoreCase(channelCode) && !validNumberLength(secretRequest.getSecret(),6)) return "Invalid token, must be 6 digits";
-        if ("02".equalsIgnoreCase(channelCode)||"03".equalsIgnoreCase(channelCode) && !validNumberLength(secretRequest.getSecret(),4)) return "Invalid pin, must be 4 digits";
+        if (!validNumberLength(secretRequest.getPhoneNumber(),4,15)) return "phone number must be between 4 and 11 digits";
+        if ("01".equalsIgnoreCase(channelCode) && !validNumberLength(secretRequest.getSecret(),6)) return "token must be 6 digits";
+        if ("02".equalsIgnoreCase(channelCode)||"03".equalsIgnoreCase(channelCode) && !validNumberLength(secretRequest.getSecret(),4)) return "pin must be 4 digits";
         return null;
     }
     public static boolean validData(Object obj){
@@ -59,7 +71,7 @@ public class Validation {
     }
 
     public static boolean validLength(String string, int min, int max) {
-
+        if (!validData(string)) return false;
         if (string.length() < min) {
             return false;
         }

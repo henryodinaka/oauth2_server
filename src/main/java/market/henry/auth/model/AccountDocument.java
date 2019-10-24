@@ -1,5 +1,6 @@
 package market.henry.auth.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -13,6 +14,7 @@ import javax.persistence.Id;
 @ToString
 @Getter
 @Entity
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AccountDocument {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)

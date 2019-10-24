@@ -14,6 +14,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -45,6 +46,8 @@ public class UserRunner implements ApplicationRunner {
             admin.setRoles(roleSet);
             admin.setEmail("deleogold@gmail.com");
             admin.setFirstName("Odinaka");
+            admin.setAccountNumber("6756483746");
+            admin.setAccountBalance(new BigDecimal("5000394"));
             admin.setLastName("Admin");
             admin.setBvn("76584759384");
             admin.setGender("M");
@@ -72,6 +75,8 @@ public class UserRunner implements ApplicationRunner {
                 List<User> users = new ArrayList<>();
                 users.add(User.builder()
                         .bvn("02342349853")
+                        .accountNumber("2039485768")
+                        .accountBalance(new BigDecimal("1000394"))
                         .email("deleogold@mailinator.com")
                         .firstName("Odinaka")
                         .gender("M")
@@ -84,6 +89,8 @@ public class UserRunner implements ApplicationRunner {
 
                 users.add(User.builder()
                         .bvn("90987564323")
+                        .accountNumber("3094857683")
+                        .accountBalance(new BigDecimal("5000"))
                         .email("gift@mailinator.com")
                         .firstName("Gift")
                         .gender("F")
@@ -96,6 +103,8 @@ public class UserRunner implements ApplicationRunner {
 
                 users.add(User.builder()
                         .bvn("78576843212")
+                        .accountNumber("0029384756")
+                        .accountBalance(new BigDecimal("4092834"))
                         .email("ken@mailinator.com")
                         .firstName("Ken")
                         .gender("M")

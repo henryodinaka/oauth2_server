@@ -18,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+
 @Service
 @Slf4j
 public class CommonService {
@@ -51,7 +53,7 @@ public class CommonService {
         if (user == null)
         {
             log.info("Invalid bvn; User not found");
-            return ResponseEntity.ok(new Response(200,"User has no account",null));
+            return ResponseEntity.ok(new Response(404,"User has no account",null));
         }
         try {
             return Response.setUpResponse(202,"User has account","",new BvnDetails(user));
@@ -59,6 +61,33 @@ public class CommonService {
             log.error("ERROR::::::",e);
             return Response.setUpResponse(e.getHttpCode(),e.getMessage(),"",null);
         }
+    }
+    public ResponseEntity accountInquiry(String accountNumber){
+
+        if (!Validation.validNumberLength(accountNumber,10)) return Response.setUpResponse(400,"Account number must be 10 digits");
+        User user = userRepo.accountInquiry(accountNumber);
+        if (user == null)
+        {
+            log.info("Invalid Account number; User not found");
+            return ResponseEntity.ok(new Response(404,"This account number does not exist on our systems",null));
+        }
+        try {
+            return Response.setUpResponse(202,"User has account","",new BvnDetails(user));
+        } catch (AuthServerException e) {
+            log.error("ERROR::::::",e);
+            return Response.setUpResponse(e.getHttpCode(),e.getMessage(),"",null);
+        }
+    }
+    public ResponseEntity accountBalanceInquiry(String accountNumber){
+
+        if (!Validation.validNumberLength(accountNumber,10)) return Response.setUpResponse(400,"Account number must be 10 digits");
+        BigDecimal balanceInquiry = userRepo.accountBalanceInquiry(accountNumber);
+        if (balanceInquiry == null)
+        {
+            log.info("Invalid Account number; User not found");
+            return ResponseEntity.ok(new Response(404,"This account number does not exist on our systems",null));
+        }
+        return Response.setUpResponse(202,"User has account","",balanceInquiry);
     }
     public ResponseEntity generateSecret(String phoneNumber,String channelCode) throws AuthServerException {
 

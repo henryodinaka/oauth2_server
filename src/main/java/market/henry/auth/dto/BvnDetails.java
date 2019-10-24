@@ -1,11 +1,13 @@
 package market.henry.auth.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import market.henry.auth.exceptions.AuthServerException;
 import market.henry.auth.model.Account;
 import market.henry.auth.model.User;
 import market.henry.auth.utils.CommonUtils;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 public class BvnDetails {
     private String bvn;
@@ -27,6 +29,7 @@ public class BvnDetails {
         this.phoneNumber = user.getPhoneNumber();
         this.email = user.getEmail();
         this.dob = CommonUtils.dateToString(user.getDob());
+        this.accountNumber = user.getAccountNumber();
     }
 
     public BvnDetails(Account account) throws AuthServerException {

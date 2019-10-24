@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -33,6 +34,8 @@ public class User {
     private String phoneNumber;
     private String email;
     private LocalDate dob;
+    private String accountNumber;
+    private BigDecimal accountBalance;
 
     @JsonIgnore
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -41,6 +44,17 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "RoleId", referencedColumnName = "id"))
     private Set<Role> roles;
 
+    public User(String title, String firstName, String lastName, String gender, String bvn, String phoneNumber,String email,LocalDate dob,String accountNumber) {
+        this.title = title;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.bvn = bvn;
+        this.phoneNumber = phoneNumber;
+        this.email =email;
+        this.dob = dob;
+        this.accountNumber=accountNumber;
+    }
     public User(String title, String firstName, String lastName, String gender, String bvn, String phoneNumber,String email,LocalDate dob) {
         this.title = title;
         this.firstName = firstName;

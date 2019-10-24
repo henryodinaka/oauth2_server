@@ -1,5 +1,6 @@
 package market.henry.auth.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 @ToString
 @Getter
 @Entity
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Account {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
