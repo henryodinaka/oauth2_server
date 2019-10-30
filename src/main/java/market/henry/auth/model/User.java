@@ -18,12 +18,13 @@ import java.util.Set;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
+//@NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Table(name = "Users")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
     @Id
+    @SequenceGenerator(name = "seqAccoutId", sequenceName = "seqAccoutId", initialValue = 1)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
@@ -36,6 +37,8 @@ public class User {
     private LocalDate dob;
     private String accountNumber;
     private BigDecimal accountBalance;
+    private Integer pin;
+    private Integer token;
 
     @JsonIgnore
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -64,5 +67,8 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.email =email;
         this.dob = dob;
+    }
+
+    public User() {
     }
 }

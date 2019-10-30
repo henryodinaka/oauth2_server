@@ -12,7 +12,6 @@ import market.henry.auth.utils.CommonUtils;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -26,8 +25,6 @@ public class UserRunner implements ApplicationRunner {
 
     private final RoleRepo roleRepo;
     private final UserRepo userRepo;
-    private final PasswordEncoder passwordEncoder;
-
 
     @Override
     public void run(ApplicationArguments args) {
@@ -51,6 +48,8 @@ public class UserRunner implements ApplicationRunner {
             admin.setLastName("Admin");
             admin.setBvn("76584759384");
             admin.setGender("M");
+            admin.setPin(1234);
+            admin.setToken(123456);
             try {
                 admin.setDob(CommonUtils.dateFormat("1976-03-20"));
             } catch (AuthServerException e) {
@@ -85,6 +84,8 @@ public class UserRunner implements ApplicationRunner {
                         .roles(roleSet)
                         .title("Ms")
                         .dob(CommonUtils.dateFormat("1990-02-21"))
+                        .pin(4444)
+                        .token(232323)
                         .build());
 
                 users.add(User.builder()
@@ -98,6 +99,8 @@ public class UserRunner implements ApplicationRunner {
                         .phoneNumber("07069659979")
                         .roles(roleSet)
                         .title("Ms")
+                        .pin(8888)
+                        .token(898989)
                         .dob(CommonUtils.dateFormat("1992-05-25"))
                         .build());
 
@@ -112,6 +115,8 @@ public class UserRunner implements ApplicationRunner {
                         .phoneNumber("08062864123")
                         .roles(roleSet)
                         .title("Ms")
+                        .pin(3434)
+                        .token(343434)
                         .dob(CommonUtils.dateFormat("1998-04-01"))
                         .build());
 

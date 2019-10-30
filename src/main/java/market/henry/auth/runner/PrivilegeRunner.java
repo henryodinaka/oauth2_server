@@ -32,7 +32,7 @@ public class PrivilegeRunner implements ApplicationRunner {
                     )
                     .collect(Collectors.toList());
                 try {
-                    privilegeRepo.saveAll(privileges);
+                    privilegeRepo.save(privileges);
                 }catch (Exception e){
                     //e.printStackTrace();
                 }

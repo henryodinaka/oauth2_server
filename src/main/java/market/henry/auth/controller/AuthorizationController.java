@@ -30,7 +30,7 @@ public class AuthorizationController {
             e.printStackTrace();
             return ResponseEntity.ok(new Response(e.getHttpCode(),e.getMessage(),null));
         }
-        return ResponseEntity.ok(new Response(202,"Token was generated",token));
+        return ResponseEntity.ok(new Response(202,"Access Token was generated",token));
     }
     @GetMapping("/validate")
     public ResponseEntity validateToken(HttpServletRequest httpServletRequest){

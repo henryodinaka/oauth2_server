@@ -93,7 +93,8 @@ public class CommonService {
 
         String secret = null;
         String message = null;
-
+        User user = userRepo.getByPhoneNumber(phoneNumber);
+        if (user == null) return Response.setUpResponse(ResponseCode.ITEM_NOT_FOUND,"Phone number",null);
         switch (channelCode){
             case "01": secret =  RandomStringUtils.random(6,false,true);
                 message = "Token";
@@ -109,33 +110,41 @@ public class CommonService {
         boolean saved = redisService.saveRecordToRedis(secret, phoneNumber, Long.parseLong(tokenTimeOut == null ? "15" : tokenTimeOut));
         if (!saved)
             return Response.setUpResponse(ResponseCode.UNAVAILABLE,message,null);
-        sendEmail(phoneNumber,secret,tokenTimeOut);
+        sendEmail(user.getEmail(),secret,tokenTimeOut);
         return Response.setUpResponse(ResponseCode.SUCCESS,"",secret);
     }
     public ResponseEntity validateSecret(String phoneNumber,String secret,String channelCode) throws AuthServerException {
 
+        User user = userRepo.getByPhoneNumber(phoneNumber);
+        if (user == null) return Response.setUpResponse(ResponseCode.ITEM_NOT_FOUND,"Phone number",null);
+        log.info("Incoming phoneNumber {} Secret {} User phone number {} secret {}",phoneNumber,secret,user.getPhoneNumber(),user.getPin()+" token "+user.getToken());
+        boolean isValid = false;
         String message = null;
         System.out.println("The code "+channelCode);
 
         switch (channelCode){
             case "01":
                 message = "Token";
+                if (user.getToken().equals(Integer.parseInt(secret)))
+                    isValid = true;
             break;
             case "02":
             case "03":
-                message = "OTP";
+                message = "Pin";
+                if (user.getPin().equals(Integer.parseInt(secret)))
+                    isValid = true;
             break;
             default:throw new AuthServerException(400,"Invalid channel code");
         }
+        if (!isValid) {
+            String secretSaved = redisService.getRecordFromRedis(phoneNumber, String.class);
 
-        String secretSaved = redisService.getRecordFromRedis(phoneNumber, String.class);
+            if (secretSaved == null)
+                return ResponseEntity.ok(new Response(408, "Invalid " + message + " ", null));
 
-        if (secretSaved==null)
-            return ResponseEntity.ok(new Response(408,message+" has expired",null));
-
-        if (!secretSaved.equalsIgnoreCase(secret))
-            return ResponseEntity.ok(new Response(400,message+" is invalid",null));
-
+            if (!secretSaved.equalsIgnoreCase(secret))
+                return ResponseEntity.ok(new Response(400, message + " is invalid", null));
+        }
         return Response.setUpResponse(202,message+" is valid","",null);
     }
 

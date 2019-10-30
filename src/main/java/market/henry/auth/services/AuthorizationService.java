@@ -82,9 +82,9 @@ public class AuthorizationService {
             return new Response(e.getHttpCode(),e.getMessage(),null);
         }
         if (!valid){
-            log.info("{}",new Response(401,"Invalid token",null));
-            return new Response(401,"Invalid token",null);
+            log.info("{}",new Response(401,"Invalid access token",null));
+            return new Response(401,"Invalid access token",null);
         }
-        return new Response(202,"Token is valid",null);
+        return new Response(202,"Access Token is valid",null);
     }
 }

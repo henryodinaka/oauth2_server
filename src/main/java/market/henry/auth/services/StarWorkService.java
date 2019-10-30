@@ -39,7 +39,7 @@ public class StarWorkService {
                 .interestRate(loanRequest.getInterestRate())
                 .productCode(loanRequest.getProductCode())
                 .tenor(loanRequest.getTenor())
-                .loanStatus(LoanStatus.APPROVED.name())
+                .loanStatus(LoanStatus.UNAPPROVED.name())
                 .build();
     }
 
@@ -54,7 +54,7 @@ public class StarWorkService {
             ds.setActive(true);
             updates.add(ds);
         });
-        return starWorkRepo.saveAll(updates);
+        return starWorkRepo.save(updates);
 
     }
 }

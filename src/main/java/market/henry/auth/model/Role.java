@@ -19,6 +19,7 @@ import java.util.Set;
 public class Role {
 
     @Id
+    @SequenceGenerator(name = "seqAccoutId", sequenceName = "seqAccoutId", initialValue = 1)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

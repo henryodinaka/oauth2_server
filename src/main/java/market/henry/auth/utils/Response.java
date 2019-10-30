@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import java.io.Serializable;
 
 @Data
-@NoArgsConstructor
+//@NoArgsConstructor
 @Slf4j
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)

@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Account {
-
+    @SequenceGenerator(name = "seqAccoutId", sequenceName = "seqAccoutId", initialValue = 1)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;

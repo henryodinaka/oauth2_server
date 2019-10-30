@@ -18,6 +18,9 @@ public interface UserRepo  extends JpaRepository<User, Long> {
     @Query("select u from User u where u.email= ?1")
     User getByEmail(String email);
 
+    @Query("select u from User u where u.phoneNumber= ?1")
+    User getByPhoneNumber(String phoneNumber);
+
     @Query("select u.accountBalance from User u where u.accountNumber= ?1")
     BigDecimal accountBalanceInquiry(String accountNumber);
 

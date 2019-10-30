@@ -16,11 +16,12 @@ import java.util.Set;
 @Entity
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
+//@NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Privilege implements Serializable, Comparable, GrantedAuthority {
 
     @Id
+    @SequenceGenerator(name = "seqAccoutId", sequenceName = "seqAccoutId", initialValue = 1)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
